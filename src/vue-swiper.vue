@@ -156,7 +156,7 @@
                 this.startTime = new Date().getTime();
                 this.dragging = true;
                 this.transitionDuration = 0;
-                var opts = this._supportPassive() ? {passive: true} : false
+                var opts = this._supportPassive() ? {passive: false} : false
                 document.addEventListener('touchmove', this._onTouchMove, opts);
                 document.addEventListener('touchend', this._onTouchEnd, opts);
                 document.addEventListener('mousemove', this._onTouchMove, opts);
