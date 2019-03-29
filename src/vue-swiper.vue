@@ -137,6 +137,18 @@
             isVertical() {
                 return this.direction === VERTICAL;
             },
+            _supportPassive() {
+                var supportsPassive = false;
+                try {
+                var opts = Object.defineProperty({}, 'passive', {
+                    get: function() {
+                    supportsPassive = true;
+                    }
+                });
+                window.addEventListener("test", null, opts);
+                } catch (e) {}
+                return supportsPassive
+            },
             _onTouchStart(e) {
                 this.startPos = this._getTouchPos(e);
                 this.delta = 0;
@@ -144,14 +156,15 @@
                 this.startTime = new Date().getTime();
                 this.dragging = true;
                 this.transitionDuration = 0;
-
-                document.addEventListener('touchmove', this._onTouchMove, false);
-                document.addEventListener('touchend', this._onTouchEnd, false);
-                document.addEventListener('mousemove', this._onTouchMove, false);
-                document.addEventListener('mouseup', this._onTouchEnd, false);
+                var opts = this._supportPassive() ? {passive: true} : false
+                document.addEventListener('touchmove', this._onTouchMove, opts);
+                document.addEventListener('touchend', this._onTouchEnd, opts);
+                document.addEventListener('mousemove', this._onTouchMove, opts);
+                document.addEventListener('mouseup', this._onTouchEnd, opts);
             },
             _onTouchMove(e) {
                 this.delta = this._getTouchPos(e) - this.startPos;
+                console.log('nnnn', this.delta ,e)
 
                 if (!this.performanceMode) {
                     this._setTranslate(this.startTranslate + this.delta);
